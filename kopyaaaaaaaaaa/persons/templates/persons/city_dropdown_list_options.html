@@ -1,0 +1,36 @@
+{% if yayinevies  %}
+<option value="">Yayın Evini Seçiniz...</option>
+{% for yayinevie in yayinevies %}
+<option value="{{ yayinevie.pk }}">{{ yayinevie.name }}</option>
+{% endfor %}
+{% endif  %}
+{% if kitaptürü  %}
+<option value="">Kitap Türü Seçiniz...</option>
+{% for kitaptürü in kitaptürü %}
+<option value="{{ kitaptürü.pk }}">{{ kitaptürü.name }}</option>
+{% endfor %}
+{% endif  %}
+
+
+{% if kitaptürüx  %}
+<option value="">Ürün türünü seçiniz...</option>
+{% for kitaptürü in kitaptürüx %}
+<option value="{{ kitaptürü.pk }}">{{ kitaptürü.name }}</option>
+{% endfor %}
+{% endif  %}
+
+{% if dersturu  %}
+<option value="">Dersi Seçiniz...</option>
+{% for y in dersturu %}
+<option value="{{ y.pk }}">{{ y.name }}</option>
+{% endfor %}
+{% endif  %}
+
+
+{% if kitapismi  %}
+<option value="">Dersi Seçiniz...</option>
+{% for y in kitapismi %}
+<option value="{{ y.pk }}">{{ y.name }}</option>
+{% endfor %}
+{% endif  %}
+

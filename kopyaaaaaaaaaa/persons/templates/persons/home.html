@@ -1,0 +1,240 @@
+{% load crispy_forms_tags %}
+<!doctype html>
+<html lang="en">
+<head>
+   <style>
+    div {
+        border-color: rgb(201, 76, 76);
+    }
+    button {
+ --color: #560bad;
+ font-family: inherit;
+ display: inline-block;
+ width: 8em;
+ height: 2.6em;
+ line-height: 2.5em;
+ margin: 20px;
+ position: relative;
+ overflow: hidden;
+ border: 2px solid var(--color);
+ transition: color .5s;
+ z-index: 1;
+ font-size: 17px;
+ border-radius: 6px;
+ font-weight: 500;
+ color: var(--color);
+}
+
+button:before {
+ content: "";
+ position: absolute;
+ z-index: -1;
+ background: var(--color);
+ height: 150px;
+ width: 200px;
+ border-radius: 50%;
+}
+
+button:hover {
+ color: #fff;
+}
+
+button:before {
+ top: 100%;
+ left: 100%;
+ transition: all .7s;
+}
+
+button:hover:before {
+ top: -30px;
+ left: -30px;
+}
+
+button:active:before {
+ background: #3a0ca3;
+ transition: background 0s;
+}
+.baslık{
+    background: #000080;
+}
+   </style>
+
+
+    
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+                <title>Dependent Dropdown in Django</title>                 
+
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="baslık">
+               <h2>Kitabını Bul!</h2>
+            </div>
+        </div>
+    </div>
+<div class="container">
+    <div class="row">
+        <div  class="col-sm-6 offset-sm-3 mt-5">
+
+            <form method="post" id="personForm" data-get-html-url="{% url 'ajax_load_gethtml' %}" data-isim-url="{% url 'ajax_load_isim' %}" data-ders-url="{% url 'ajax_load_ders' %}" data-type-url="{% url 'ajax_load_type' %}" data-yayinevi-url="{% url 'ajax_load_yayinevi' %}" data-kitaptürü-url="{% url 'ajax_load_tyt_ayt' %}">
+            {% csrf_token %}
+            <div >
+            {{ form|crispy }}
+            </div>
+
+            <div>
+            </div>
+
+            <button id="GetHtml"> Kitap Bilgilerini Getir!
+            </button>
+            
+        </form>
+        <div id="myDiv"></div>
+    </div>
+</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+    $("#id_basimyili").change(function () {
+        const url = $("#personForm").attr("data-yayinevi-url");  // get the url of the `load_cities` view
+        const basimyiliId = $(this).val();  // get the selected country ID from the HTML input
+
+        $.ajax({                       // initialize an AJAX request
+            url: url,                    // set the url of the request (= /persons/ajax/load-cities/ )
+            data: {
+                'basimyiliId': basimyiliId,
+                'aaa':1221       // add the country id to the GET parameters
+            },
+            success: function (data) {   // `data` is the return of the `load_cities` view function
+                $("#id_yayinevi").html(data);  // replace the contents of the city input with the data that came from the server
+            }
+        });
+
+    });
+</script>
+<script>
+    $("#id_yayinevi").change(function () {
+        const url = $("#personForm").attr("data-kitaptürü-url");  // get the url of the `load_cities` view
+        const yayineviId = $(this).val();  // get the selected country ID from the HTML input
+
+        $.ajax({                       // initialize an AJAX request
+            url: url,                    // set the url of the request (= /persons/ajax/load-cities/ )
+            data: {
+                'yayineviId': yayineviId,
+            },
+            success: function (data) {   // `data` is the return of the `load_cities` view function
+                $("#id_sinif").html(data);  // replace the contents of the city input with the data that came from the server
+            }
+        });
+
+    });
+</script>
+<script>
+    $("#id_sinif").change(function () {
+        const url = $("#personForm").attr("data-type-url");  // get the url of the `load_cities` view
+        const sinifId = $(this).val();  // get the selected country ID from the HTML input
+
+        $.ajax({                       // initialize an AJAX request
+            url: url,                    // set the url of the request (= /persons/ajax/load-cities/ )
+            data: {
+                'sinifId': sinifId,
+            },
+            success: function (data) {   // `data` is the return of the `load_cities` view function
+                $("#id_kitapturu").html(data);  // replace the contents of the city input with the data that came from the server
+            }
+        });
+
+    });
+</script>
+<script>
+    var dersturuId;
+
+    $("#id_dersturu").change(function () {
+        const url = $("#personForm").attr("data-isim-url");
+        dersturuId = $(this).val();
+        $.ajax({
+            url: url,
+            data: {
+                'dersturuId': dersturuId,
+            },
+            success: function (data) {
+                $("#id_kitapismi").html(data);
+            }
+        });
+
+    });
+
+    $(document).ready(function(){
+        const url = $("#personForm").attr("data-get-html-url");
+        $("#GetHtml").click(function(){
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {'dersturuId': dersturuId},
+                dataType: 'html',
+                success: function(data){
+                    $("#myDiv").html(data);
+                    // Do something with the response
+                },
+                error: function(error){
+                    console.log(error);
+                    // Handle errors here
+                }
+            });
+        });
+    });
+</script>
+
+
+<!-- <script>
+   
+    var dersturuId;
+
+    $("#id_dersturu").change(function () {
+        const url = $("#personForm").attr("data-isim-url");
+        dersturuId = $(this).val();
+        $.ajax({
+            url: url,
+            data: {
+                'dersturuId': dersturuId,
+            },
+            success: function (data) {
+                $("#id_kitapismi").html(data);
+            }
+        });
+
+    });
+
+    $(document).ready(function(){
+        const url = $("#personForm").attr("data-get-html-url");
+        $("#GetHtml").click(function(){
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {'message': 'Hello, server!', 'dersturuId': dersturuId},
+                success: function(data){
+                    console.log(data);
+                    // Do something with the response
+                },
+                error: function(error){
+                    console.log(error);
+                    // Handle errors here
+                }
+            });
+        });
+    });
+    </script> -->
+  
+ 
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+</body>
+</html>
